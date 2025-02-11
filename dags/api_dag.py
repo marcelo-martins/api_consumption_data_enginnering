@@ -5,7 +5,8 @@ from airflow.providers.amazon.aws.transfers.local_to_s3 import LocalFilesystemTo
 
 from datetime import datetime
 
-from plugins.nba_api.call_api import call_tmdb_movie, call_tmdb_references
+from plugins.api_utils.call_api import call_tmdb_movie, call_tmdb_references
+from plugins.api_utils.upload_to_s3 import upload_files_to_s3
 import os
 
 default_args = {
@@ -16,6 +17,7 @@ default_args = {
 API_URL_MOVIE = 'https://api.themoviedb.org/3/trending/movie/day'
 API_URL_LANGUAGE = 'https://api.themoviedb.org/3/configuration/languages'
 API_URL_MOVIE_GENRES = 'https://api.themoviedb.org/3/genre/movie/list'
+PAGES = 1
 
 with DAG(
     dag_id='api_consumption',
@@ -26,13 +28,13 @@ with DAG(
     
     @task.python(task_id='read_api_movies_en_us')
     def get_trending_movies_en_us():
-        response = call_tmdb_movie(API_URL_MOVIE, language='en-US', pages=1)
+        response = call_tmdb_movie(API_URL_MOVIE, language='en-US', pages=PAGES)
         print(f'inside dag {response}')
         return response
     
     @task.python(task_id='read_api_movies_pt_br')
     def get_trending_movies_pt_br():
-        response = call_tmdb_movie(API_URL_MOVIE, language='pt-BR', pages=1)
+        response = call_tmdb_movie(API_URL_MOVIE, language='pt-BR', pages=PAGES)
         print(f'inside dag {response}')
         return response
     
@@ -48,23 +50,13 @@ with DAG(
         print(f'inside dag {response}')
         return response
     
-    # @task.python(task_id='extract_values')
-    # def extract_values(ti=None):
-    #     filebasepath, filename = ti.xcom_pull(task_ids='read_api')
-    #     print(f'inside dag {filebasepath}, {filename}')
-    #     miniofilepath = f's3://{os.getenv('BUCKET_NAME')}/{filename}'
-    #     return {'miniofilepath': miniofilepath, 'filename': filebasepath + filename}
+    @task.python(task_id='upload_to_s3')
+    def call_upload_to_s3():
+        response = upload_files_to_s3(os.getenv('BUCKET_NAME'), '/usr/local/airflow/include/api_outputs')
+        print(f'inside dag {response}')
+        return response
 
-    # create_object = LocalFilesystemToS3Operator(
-    #     task_id="create_object",
-    #     filename="{{ti.xcom_pull(task_ids='extract_values')['filename']}}",
-    #     dest_key="{{ti.xcom_pull(task_ids='extract_values')['miniofilepath']}}",
-    #     replace=True,
-    #     aws_conn_id='s3_conn'
-    # )
-
-    get_trending_movies_en_us() >> get_trending_movies_pt_br() >> get_languages() >> get_genres()
-    #>> extract_values() >> create_object
+    get_trending_movies_en_us() >> get_trending_movies_pt_br() >> get_languages() >> get_genres() >> call_upload_to_s3()
 
 
 if __name__ == "__main__":
