@@ -1,13 +1,55 @@
-.git
-.env
-.DS_Store
-airflow_settings.yaml
+# Python
 __pycache__/
-astro
-.venv
-airflow-webserver.pid
-webserver_config.py
-airflow.cfg
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+myenv/
+.cursor/
+
+# dbt
+dbt_modules/
+target/
+dbt_packages/
+
+# Airflow
+logs/
 airflow.db
-include/api_outputs
-ignore/*
+unittest.cfg
+*.pid
+
+# Docker
+*.log
+*.pid
+*.sock
+
+# Metabase
+/metabase-data/
+
+# VS Code or JetBrains
+.vscode/
+.idea/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# GitHub Actions
+*.coverage
+.cache/
+
+# Ignore Terraform state
+*.tfstate
+*.tfstate.backup
+
+# Ignore tfvars containing secrets
+*.tfvars
+
+# Ignore Terraform provider lock
+.terraform.lock.hcl
+
+# Ignore local .terraform modules and provider cache
+.terraform/
+
+# Ignore crash logs
+crash.log
