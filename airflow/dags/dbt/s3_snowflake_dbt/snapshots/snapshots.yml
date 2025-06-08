@@ -1,0 +1,15 @@
+version: 2
+
+snapshots:
+  - name: snap_genres
+    description: Tracks historical changes to genre ID and name from the raw TMDB API.
+    columns:
+      - name: genre_id
+        description: Unique ID of the genre from TMDB.
+        tests:
+          - not_null
+          - unique
+      - name: genre_name
+        description: Name of the genre (e.g., Action, Comedy).
+        tests:
+          - not_null

@@ -1,0 +1,38 @@
+version: 2
+
+sources:
+  - name: moviesapi
+    schema: api_schema
+    tables:
+      - name: raw_movies
+        identifier: raw_json_movies
+        columns:
+          - name: RAW_MOVIES
+            tests:
+              - dbt_expectations.expect_column_values_to_not_be_null
+          - name: SOURCE_FILE
+            tests:
+              - dbt_expectations.expect_column_values_to_not_be_null
+          - name: INGESTION_TS
+            tests:
+              - dbt_expectations.expect_column_values_to_not_be_null
+
+      - name: raw_genres
+        identifier: raw_json_genres
+        columns:
+          - name: RAW_GENRES
+            tests:
+              - dbt_expectations.expect_column_values_to_not_be_null
+          - name: INGESTION_TS
+            tests:
+              - dbt_expectations.expect_column_values_to_not_be_null
+
+      - name: raw_languages
+        identifier: raw_json_languages
+        columns:
+          - name: RAW_LANGUAGES
+            tests:
+              - dbt_expectations.expect_column_values_to_not_be_null
+          - name: INGESTION_TS
+            tests:
+              - dbt_expectations.expect_column_values_to_not_be_null

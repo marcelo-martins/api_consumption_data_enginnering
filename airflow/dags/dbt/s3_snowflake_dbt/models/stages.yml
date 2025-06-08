@@ -1,0 +1,63 @@
+version: 2
+
+models:
+  - name: stg_movies
+    description: "Flattened movie data from the API"
+    columns:
+      - name: movie_id
+        description: "Unique idenfier for each movie"
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+      - name: title
+        description: "Title in the local's language"
+      - name: original_title
+        description: "Original title"
+      - name: overview
+        description: "Plot summary"
+      - name: release_date
+        description: "Date the movie was released"
+      - name: language_code
+        description: "ISO 639-1 language code"
+      - name: popularity
+        description: "Popularity score from the API"
+      - name: vote_average
+        description: "Average vote"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 10
+              strictly: false
+      - name: vote_count
+        description: "Total number of votes"
+      - name: genre_ids
+        description: "Array of genre IDs"
+      - name: file_ranking_date
+        description: "The date represented by the ranking"
+      - name: ingestion_ts
+        description: "Timestamp of ingestion"
+
+  - name: stg_genres
+    description: "Endpoint with the genres and IDs flattened"
+    columns:
+      - name: genre_id
+        description: "Unique genre ID"
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
+      - name: genre_name
+        description: "Genre name"
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+
+  - name: stg_languages
+    description: "ISO 639-1 language metadata"
+    columns:
+      - name: language_iso_code
+        description: "Language code"
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null
+          - dbt_expectations.expect_column_values_to_be_unique
+      - name: language_name
+        description: "Language name in English"
+        tests:
+          - dbt_expectations.expect_column_values_to_not_be_null

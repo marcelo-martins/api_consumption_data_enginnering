@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: dim_genres
+    description: Dimension table for genres.
+    columns:
+      - name: genre_id
+        description: Unique identifier of the genre.
+        tests:
+          - dbt_expectations.expect_column_values_to_be_unique
+          - dbt_expectations.expect_column_values_to_not_be_null
+      - name: genre_name
+        description: Name of the genre (e.g., Action, Drama).
+
+  - name: dim_languages
+    description: Dimension table for languages.
+    columns:
+      - name: language_iso_code
+        description: ISO language code (e.g., en, pt).
+        tests:
+          - dbt_expectations.expect_column_values_to_be_unique
+          - dbt_expectations.expect_column_values_to_not_be_null
+      - name: language_name
+        description: Full name of the language (e.g., English, Portuguese, Korean).
