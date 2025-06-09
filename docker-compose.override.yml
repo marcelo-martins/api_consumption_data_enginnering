@@ -2,4 +2,6 @@ services:
   scheduler:
     user: root
     volumes:
-      - ./include:/usr/local/airflow/include
+      - ./airflow/include:/usr/local/airflow/include
+      - ./airflow/dags:/usr/local/airflow/dags
+      - ./airflow/plugins:/usr/local/airflow/plugins
