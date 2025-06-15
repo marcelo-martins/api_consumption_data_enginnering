@@ -1,6 +1,2 @@
 project:
     name: api-dbt-snowflake
-paths:
-    dags: airflow/dags
-    plugins: airflow/plugins
-    include: airflow/include

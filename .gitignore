@@ -8,7 +8,8 @@ __pycache__/
 myenv/
 .cursor/
 
-airflow/include/api_outputs/*
+include/api_outputs/*
+ignore/*
 
 # dbt
 dbt_modules/

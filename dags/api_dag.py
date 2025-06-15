@@ -1,7 +1,7 @@
 from airflow import DAG
 
 from airflow.decorators import task
-from airflow.providers.amazon.aws.transfers.local_to_s3 import LocalFilesystemToS3Operator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 
 from datetime import datetime
 
@@ -56,8 +56,54 @@ with DAG(
         print(f'inside dag {response}')
         return response
 
-    get_trending_movies_en_us() >> get_trending_movies_pt_br() >> get_languages() >> get_genres() >> call_upload_to_s3()
+    copy_movies_to_snowflake = SQLExecuteQueryOperator(
+        task_id="copy_movies_to_snowflake",
+        sql="""
+            COPY INTO api_db.api_schema.raw_json_movies (raw_movies, ingestion_ts, source_file)
+            FROM (
+                SELECT
+                    $1,
+                    CURRENT_TIMESTAMP(),
+                    METADATA$FILENAME
+                FROM @s3_stage
+            )
+            PATTERN = 'movie/[0-9]{8}/tmdb_movie.*\\.json'
+        """,
+        conn_id="snowflake_conn"
+    )
 
+    copy_genres_to_snowflake = SQLExecuteQueryOperator(
+        task_id="copy_genres_to_snowflake",
+        sql="""
+            COPY INTO api_db.api_schema.raw_json_genres (raw_genres, ingestion_ts)
+            FROM (
+                SELECT
+                    $1,
+                    CURRENT_TIMESTAMP()
+                FROM @s3_stage
+            )
+            PATTERN = 'movie/[0-9]{8}/tmdb_references_genres.*\\.json'
+        """,
+        conn_id="snowflake_conn"
+    )
+
+    copy_languages_to_snowflake = SQLExecuteQueryOperator(
+        task_id="copy_languages_to_snowflake",
+        sql="""
+            COPY INTO api_db.api_schema.raw_json_languages (raw_languages, ingestion_ts)
+            FROM (
+                SELECT
+                    $1,
+                    CURRENT_TIMESTAMP()
+                FROM @s3_stage
+            )
+            PATTERN = 'movie/[0-9]{8}/tmdb_references_languages.*\\.json'
+        """,
+        conn_id="snowflake_conn"
+    )
+
+    (get_trending_movies_en_us() >> get_trending_movies_pt_br() >> get_languages() >> get_genres()
+    >> call_upload_to_s3() >> copy_movies_to_snowflake >> copy_genres_to_snowflake >> copy_languages_to_snowflake)
 
 if __name__ == "__main__":
     dag.test()
