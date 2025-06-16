@@ -14,4 +14,5 @@ provider "snowflake" {
   password = var.snowflake_password
   
   preview_features_enabled = ["snowflake_current_account_datasource", "snowflake_storage_integration_resource", "snowflake_stage_resource", "snowflake_table_resource"]
+
 }
