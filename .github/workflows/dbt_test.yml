@@ -1,0 +1,56 @@
+name: Run dbt test
+
+on:
+  push:
+    branches: [feature/airflowandapi]
+
+jobs:
+  dbt-test:
+    runs-on: ubuntu-latest
+
+    env:
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_DATABASE: "API_DB"
+      SNOWFLAKE_SCHEMA: "API_SCHEMA"
+      SNOWFLAKE_WAREHOUSE: "API_WH"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dbt and dependencies
+        run: |
+          pip install dbt-snowflake==1.8.0  # or your adapter version
+          pip install dbt-expectations
+
+      - name: Create dbt profile
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<EOF
+          default:
+            target: dev
+            outputs:
+              dev:
+                type: snowflake
+                account: $SNOWFLAKE_ACCOUNT
+                user: $SNOWFLAKE_USER
+                password: $SNOWFLAKE_PASSWORD
+                role: TRANSFORMER
+                database: $SNOWFLAKE_DATABASE
+                warehouse: $SNOWFLAKE_WAREHOUSE
+                schema: $SNOWFLAKE_SCHEMA
+                threads: 1
+          EOF
+
+      - name: Run dbt deps
+        run: dbt deps --project-dir dags/dbt/s3_snowflake_dbt
+
+      - name: Run dbt tests
+        run: dbt test --project-dir dags/dbt/s3_snowflake_dbt
