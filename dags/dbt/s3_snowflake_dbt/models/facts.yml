@@ -5,7 +5,6 @@ models:
     description: >
       Fact table that stores exploded genre-level data for each movie version
       (per locale and language).
-
     columns:
       - name: movie_id
         description: Unique identifier of the movie.
