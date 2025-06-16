@@ -4,7 +4,7 @@ on:
   push:
     branches: [feature/*]
     paths:
-      - dags/dbt/s3_snowflake_dbt/*
+      - dags/dbt/s3_snowflake_dbt/**
   pull_request:
     branches: [main]
 
