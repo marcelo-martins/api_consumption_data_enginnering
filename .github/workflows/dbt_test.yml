@@ -2,7 +2,9 @@ name: Run dbt test
 
 on:
   push:
-    branches: [feature/airflowandapi]
+    branches: [feature/*]
+  pull_request:
+    branches: [main]
 
 jobs:
   dbt-test:
@@ -51,6 +53,9 @@ jobs:
 
       - name: Run dbt deps
         run: dbt deps --project-dir dags/dbt/s3_snowflake_dbt
+
+      - name: dbt compile
+        run: dbt compile --project-dir dags/dbt/s3_snowflake_dbt
 
       - name: Run dbt tests
         run: dbt test --project-dir dags/dbt/s3_snowflake_dbt
