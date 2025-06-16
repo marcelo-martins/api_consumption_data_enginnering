@@ -1,3 +1,9 @@
+{{
+  config(
+    materialized = 'incremental'
+    )
+}}
+
 with raw_languages_table as (
     select
         raw_languages,
@@ -26,5 +32,10 @@ select
     language_name,
     max(ingestion_ts) as ingestion_ts
 from treated_languages
+
+{% if is_incremental() %}
+where ingestion_ts > (select max(ingestion_ts) from {{ this }})
+{% endif %}
+
 group by language_iso_code, language_name
 

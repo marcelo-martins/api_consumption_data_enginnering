@@ -17,7 +17,7 @@ default_args = {
 API_URL_MOVIE = 'https://api.themoviedb.org/3/trending/movie/day'
 API_URL_LANGUAGE = 'https://api.themoviedb.org/3/configuration/languages'
 API_URL_MOVIE_GENRES = 'https://api.themoviedb.org/3/genre/movie/list'
-PAGES = 1
+PAGES = 5
 
 with DAG(
     dag_id='api_consumption',

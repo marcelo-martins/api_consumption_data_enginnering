@@ -1,3 +1,9 @@
+{{
+  config(
+    materialized = 'incremental'
+    )
+}}
+
 with raw_movies_table as (
     select
         raw_movies,
@@ -30,3 +36,7 @@ select
     to_date(regexp_substr(source_file, 'movie/([0-9]{8})/', 1, 1, 'e', 1), 'YYYYMMDD') as file_ranking_date,
     ingestion_ts
 from flattened
+
+{% if is_incremental() %}
+where ingestion_ts > (select max(ingestion_ts) from {{ this }})
+{% endif %}

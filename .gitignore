@@ -11,6 +11,8 @@ myenv/
 include/api_outputs/*
 ignore/*
 
+assets/drawio/*.bkp
+
 # dbt
 dbt_modules/
 target/

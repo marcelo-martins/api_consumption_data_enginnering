@@ -1,3 +1,9 @@
+{{
+  config(
+    materialized = 'incremental'
+    )
+}}
+
 with raw_genres_table as (
     select
         raw_genres,
@@ -26,6 +32,10 @@ select
     genre_name,
     max(ingestion_ts) as ingestion_ts
 from treated_genres
-group by genre_id, genre_name
 
+{% if is_incremental() %}
+where ingestion_ts > (select max(ingestion_ts) from {{ this }})
+{% endif %}
+
+group by genre_id, genre_name
 
