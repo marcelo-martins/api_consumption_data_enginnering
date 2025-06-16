@@ -15,6 +15,7 @@ jobs:
       SNOWFLAKE_DATABASE: "API_DB"
       SNOWFLAKE_SCHEMA: "API_SCHEMA"
       SNOWFLAKE_WAREHOUSE: "API_WH"
+      SNOWFLAKE_ROLE: "API_ROLE"
 
     steps:
       - name: Checkout
@@ -33,7 +34,7 @@ jobs:
         run: |
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml <<EOF
-          default:
+          s3_snowflake_dbt:
             target: dev
             outputs:
               dev:
@@ -41,7 +42,7 @@ jobs:
                 account: $SNOWFLAKE_ACCOUNT
                 user: $SNOWFLAKE_USER
                 password: $SNOWFLAKE_PASSWORD
-                role: TRANSFORMER
+                role: $SNOWFLAKE_ROLE
                 database: $SNOWFLAKE_DATABASE
                 warehouse: $SNOWFLAKE_WAREHOUSE
                 schema: $SNOWFLAKE_SCHEMA
