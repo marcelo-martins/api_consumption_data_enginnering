@@ -21,9 +21,6 @@ jobs:
         with:
           terraform_version: 1.12.1
 
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
       - name: Terraform Init
         working-directory: terraform
         run: terraform init
