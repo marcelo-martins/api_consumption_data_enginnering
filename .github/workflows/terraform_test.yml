@@ -32,4 +32,8 @@ jobs:
 
       - name: Terraform Plan
         working-directory: terraform
-        run: terraform plan -input=false
+        run: terraform plan -input=false \
+          -var="snowflake_org_name=${{ secrets.SNOWFLAKE_ORG_NAME_TERRAFORM }}" \
+          -var="snowflake_account_name=${{ secrets.SNOWFLAKE_ACCOUNT_NAME_TERRAFORM }}" \
+          -var="snowflake_user=${{ secrets.SNOWFLAKE_USER }}" \
+          -var="snowflake_password=${{ secrets.SNOWFLAKE_PASSWORD }}" \
