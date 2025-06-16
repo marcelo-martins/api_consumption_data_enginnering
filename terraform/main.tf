@@ -213,7 +213,7 @@ resource "snowflake_table" "raw_json_languages" {
   }
 }
 
-#GRANT SELECT ON TABLE x TO ROLE role
+#GRANT SELECT ON TABLE name TO ROLE role
 resource "snowflake_grant_privileges_to_account_role" "access_to_tables" {
   for_each = toset([ "RAW_JSON_MOVIES", "RAW_JSON_GENRES", "RAW_JSON_LANGUAGES" ])
   account_role_name = snowflake_account_role.api_role.name
