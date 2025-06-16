@@ -27,8 +27,7 @@ jobs:
 
       - name: Install dbt and dependencies
         run: |
-          pip install dbt-snowflake==1.8.0  # or your adapter version
-          pip install dbt-expectations
+          pip install dbt-snowflake==1.8.0
 
       - name: Create dbt profile
         run: |
