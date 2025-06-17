@@ -1,6 +1,6 @@
 [![Terraform CI](https://github.com/marcelo-martins/api_consumption_data_enginnering/actions/workflows/terraform_test.yml/badge.svg)](https://github.com/marcelo-martins/api_consumption_data_enginnering/actions/workflows/terraform_test.yml) [![DBT CI](https://github.com/marcelo-martins/api_consumption_data_enginnering/actions/workflows/dbt_test.yml/badge.svg)](https://github.com/marcelo-martins/api_consumption_data_enginnering/actions/workflows/dbt_test.yml)
 
-# 🎬 TMDB API Data Pipeline
+## 🎬 TMDB API Data Pipeline
 
 This project deliberately **over-engineers** a modern data pipeline that extracts, loads, and transforms data from the TMDB API into Snowflake. It leverages tools such as Terraform, S3, Apache Airflow, dbt, Metabase, Docker, and GitHub Actions to simulate a full production-like workflow.
 ---
@@ -15,7 +15,7 @@ This project deliberately **over-engineers** a modern data pipeline that extract
 - **Visualization**: Metabase connects to Snowflake for dashboarding
 
 <p align="center">
-  <img src="assets/images/dbt_snowflake.drawio.png" alt="Architecture Diagram" width="1000"/>
+  <img src="assets/images/dbt_snowflake.drawio.png" alt="Architecture Diagram" width="1200"/>
 </p>
 
 ---
@@ -74,7 +74,7 @@ Two DAGs orchestrate the flow:
 - Immediately loads them into Snowflake using `SQLExecuteQueryOperator`
 
 <p align="center">
-  <img src="assets/images/api_consumption_dag.jpeg" alt="API DAG" width="600"/>
+  <img src="assets/images/api_consumption_dag.jpeg" alt="API DAG" width="1200"/>
 </p>
 
 ---
