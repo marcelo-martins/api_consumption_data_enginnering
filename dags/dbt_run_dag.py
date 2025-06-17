@@ -1,15 +1,13 @@
-from airflow import DAG
+import os
 from datetime import datetime
 from cosmos import DbtDag, ProjectConfig, ProfileConfig
 from cosmos.profiles import SnowflakeUserPasswordProfileMapping
 
-# Path to your dbt project and profiles
 DBT_PROJECT_PATH = "/usr/local/airflow/dags/dbt/s3_snowflake_dbt"
-CONN_ID = "snowflake_conn"  # Your Airflow Snowflake connection ID
-DBT_SCHEMA = "API_SCHEMA"  # e.g., analytics
-DBT_DATABASE = "API_DB"  # e.g., analytics_db
+CONN_ID = "snowflake_conn"
+DBT_SCHEMA = os.getenv("SNOWFLAKE_SCHEMA")
+DBT_DATABASE = os.getenv("SNOWFLAKE_DATABASE")
 
-# Cosmos profile config for Snowflake
 profile_config = ProfileConfig(
     profile_name="default",
     target_name="dev",
@@ -23,7 +21,6 @@ profile_config = ProfileConfig(
     ),
 )
 
-# Create the full DAG from the dbt project
 dbt_dag = DbtDag(
     dag_id="dbt_snowflake_cosmos_dag",
     project_config=ProjectConfig(DBT_PROJECT_PATH),
